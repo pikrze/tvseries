@@ -1,0 +1,42 @@
+<apex:page sidebar="false" standardController="Cast__c" extensions="Ctrl_CastCreatePage">
+    <style>
+            .dim_a {width:400px; height:150px;}
+            .dim_b {width:200px; height:60px;}
+            </style>
+    <apex:pageMessages />
+    <apex:form >
+        <apex:panelGrid columns="2" id="theGrid" styleClass="topAligner">
+
+            <apex:outputLabel value="* Name" escape="false" />
+            <apex:inputText value="{!tv_cast.Name__c}" style="float:left" html-placeholder="Title of the serie"/>
+
+            <apex:outputLabel value="  Surname" escape="false" />
+            <apex:inputText value="{!tv_cast.Surname__c}" style="width: 260px; height: 20px" html-placeholder="Trailer link"/>
+
+            <apex:outputLabel value="  Biography" escape="false" />
+            <apex:inputText value="{!tv_cast.Biography__c}" style="width: 260px; height: 80px" html-placeholder="Description of the serie"/>
+
+            <apex:outputLabel value="* Birth Date " escape="false"/>
+            <apex:inputField value="{!tv_cast.Birth_Date__c}"/>
+
+            <apex:outputLabel value="* Role" escape="false" />
+            <apex:selectList value="{!roles}" id="picklist" multiselect="true">
+                <apex:selectOptions value="{!category}"/>
+            </apex:selectList>
+			
+             <apex:outputLabel value="* Nationality" escape="false" />
+            <apex:selectList size="1" value="{!tv_cast.Nationality__c}" id="picklist2" multiselect="false">
+                <apex:selectOptions value="{!country}"/>
+            </apex:selectList>
+
+
+
+            <apex:commandButton value="Add" action="{!addSeries}"/><br/>
+            <!--<apex:inputText value="{!tv_cast.Name__c}"/>-->
+            <!--<apex:commandButton value="Add" action="{!addSeries}" />-->
+
+
+
+        </apex:panelGrid>
+    </apex:form>
+</apex:page>

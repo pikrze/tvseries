@@ -1,0 +1,38 @@
+<apex:page sidebar="false" standardController="Season__c" extensions="Ctrl_SeasonPage">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock rendered="{!if($Profile.Name=='System Administrator',true, false)}" >
+
+           <apex:outputText value="{!Season__c.Series_Name__c}, Season: {!Season__c.Season_No__c} "/>
+            <apex:commandButton value="Back to Serie" action="{!backtoSerie}" immediate="true"/>
+            <br/>
+                <apex:outputText value="Number of Episode: "/>
+                <apex:inputText value="{!givenEpisodeNumber}" required="true"/>
+                <apex:outputText value=" Title of Episode: "/>
+                <apex:inputText value="{!givenEpisodeTitle}"/>
+                <apex:commandButton value="Add" action="{!addNewEpisode}" />
+
+            <apex:pageBlockTable value="{!episodes}" var="e">
+                <apex:column >
+                    <apex:facet name="header">Episodes</apex:facet>
+                    <apex:outputLink value="/{!e.Id}">
+                            {!e.Episode_Number__c}
+                    </apex:outputLink>
+
+
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Titles</apex:facet>
+
+                    <apex:outputText value="{!IF(e.Title__c==null, e.Episode_Number__c, e.Title__c)}" escape="false"/>
+
+                </apex:column>
+
+            </apex:pageBlockTable>
+                <apex:commandButton value="Delete All Episodes" onclick="return confirm('You are going to delete all episodes. Do you want to proceed?');" action="{!deleteAllEpisodes}" immediate="true" />
+                <apex:commandButton value="Delete Season"  onclick="return confirm('You are going to delete whole season. Do you want to proceed?');" action="{!deleteSeason}" immediate="true" />
+        </apex:pageBlock>
+
+
+    </apex:form>
+</apex:page>

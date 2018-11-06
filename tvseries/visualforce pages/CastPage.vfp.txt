@@ -1,0 +1,149 @@
+<apex:page sidebar="false" standardController="Cast__c" extensions="Ctrl_CastPage">
+
+    <style>
+        .customImage img{
+    height: 200px;
+    width: 200px;
+}
+        .customScreen img{
+    height: 140px;
+    width: 140px;
+}
+        .topAligner td{vertical-align:top}
+        h5{
+            font-size: 15px;
+            font-weight:normal;}
+        h6{font-size: 13px;
+           font-weight:normal;}
+
+
+
+
+    </style>
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+
+        <apex:panelGrid columns="2" id="theGrid" styleClass="topAligner">
+
+
+            <apex:outputText value="{!Cast__c.Photo__c}" escape="false" styleClass="customImage"/>
+            <apex:outputLabel style="white-space: pre;font-size:20px;" escape="false"
+                              value="<h1>{!Cast__c.Name__c} {!Cast__c.Surname__c}</h1>
+
+                                </br><h6>Role: <i>{!Cast__c.Role__c}</i>
+                                </br>Birth date: <i>{!Cast__c.Birth_Date__c}</i>"/>
+
+
+        </apex:panelGrid>
+
+        <apex:pageBlock title="Biography:">
+            <apex:outputText value="{!Cast__c.Biography__c}" style="width=75%"/>
+        </apex:pageBlock>
+
+       <apex:pageBlock title="Series">
+           <apex:pageBlockTable value="{!displayedSeries}" var="d">
+               <apex:column >
+                   <apex:facet name="header">Year</apex:facet>
+                   <apex:outputText value="{0, date,  yyyy}">
+                       <apex:param value="{!d.TV_Serie__r.Release_Date__c}"/>
+                   </apex:outputText>
+               </apex:column>
+               <apex:column >
+                   <apex:facet name="header">Title</apex:facet>
+                   <apex:outputLink value="/{!d.TV_Serie__r.Id}">
+                           {!d.TV_Serie__r.Title__c}
+                   </apex:outputLink>
+
+               </apex:column>
+               <apex:column >
+                   <apex:facet name="header">As</apex:facet>
+                       {!d.Character__c}
+               </apex:column>
+               <apex:column >
+                   <apex:outputLink value="/{!d.id}">
+                           Edit
+                   </apex:outputLink>
+               </apex:column>
+           </apex:pageBlockTable>
+       </apex:pageBlock>
+
+
+
+
+
+
+        <!--EDIT SECTION -->
+        <apex:commandButton rendered="{!if($Profile.Name=='System Administrator',true, false)}" value="Edit Section"
+                            action="{!EdittheSection}" immediate="true"/>
+
+        <apex:pageBlock title="Edit Section:" rendered="{!editSection}">
+            <apex:commandButton value="Delete" action="{!deleteCast}"  immediate="true"
+                                onclick="return confirm('You are going to delete this page. Do you want to proceed?');"/>
+            <br/>
+            <apex:outputText value="Name: " style="float:left"/>
+            <apex:inputText value="{!Cast__c.Name__c}" style="width=75%"/>
+            <br/>
+            <apex:outputText value="Surname: " style="float:left"/>
+            <apex:inputText value="{!Cast__c.Surname__c}"/>
+            <br/>
+            <apex:outputText value="Biography: " style="float:left"/>
+            <apex:inputText value="{!Cast__c.Biography__c}" style="width=75%; width:250px"/>
+            <br/>
+            <apex:outputText value="Birth Date: " style="float:left"/>
+            <apex:inputField value="{!Cast__c.Birth_Date__c}" style="width=75%"/>
+            <br/>
+            <apex:outputText value="Role: " style="float:left"/>
+            <apex:selectList value="{!roles}" id="picklist" multiselect="true">
+                <apex:selectOptions value="{!category}"/>
+            </apex:selectList>
+            <br/>
+            <apex:selectList size="1" value="{!Cast__c.Nationality__c}" id="picklist2" multiselect="false">
+                <apex:selectOptions value="{!country}"/>
+            </apex:selectList>
+            <br/>
+
+
+            <apex:commandButton value="save" action="{!saveChanges}"/>
+            <br/>
+
+            <apex:inputFile value="{!photo}"></apex:inputFile>
+            <apex:commandButton value="Upload Logo" action="{!UploadPhoto}" immediate="true"/>
+            <br/>
+
+            <apex:pageBlock title="Assign to Series">
+                <!--<apex:outputText value="Title:"/>
+                <apex:inputText value="{!title}"/> -->
+                <apex:inputField id="cas" value="{!cas.TV_Serie__c}"/>
+               <!-- <apex:outputText value="Id:"/> 
+                <apex:inputText value="{!idSearch}"/>-->
+                <apex:commandButton value="Search" action="{!searchAll}"/><br/>
+                <apex:outputText value="Character:"/>
+                <apex:inputText value="{!playedCharacter}" title="character"/>
+                <apex:commandButton value="Assign to Serie" action="{!assignToSerie}"/>
+
+                <apex:pageBlockSection >
+                    <apex:pageBlockTable value="{!series}" var="s" id="out">
+                        <apex:column >
+                            <apex:facet name="header">Series</apex:facet>
+                            <apex:outputLink value="/{!s.Id}">
+                                    {!s.Title__c}
+                            </apex:outputLink>
+
+                        </apex:column>
+                       <!-- <apex:column >
+                            {!s.Id} {!s.Country__c}
+                        </apex:column> -->
+
+
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+
+
+            </apex:pageBlock>
+
+
+        </apex:pageBlock>
+
+
+    </apex:form>
+</apex:page>

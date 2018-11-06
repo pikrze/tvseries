@@ -1,0 +1,218 @@
+<apex:page sidebar="false" standardController="TV_Serie__c" extensions="Ctrl_TVSeriePage">
+
+    <style>
+        .customImage img{
+    height: 200px;
+    width: 200px;
+}
+        .customScreen img{
+    height: 140px;
+    width: 140px;
+}
+        .customPhoto img{
+    height: 60px;
+    width: 60px;
+}
+        .topAligner td{vertical-align:top}
+        h5{
+            font-size: 15px;
+            font-weight:normal;}
+        h6{font-size: 13px;
+           font-weight:normal;}
+
+
+
+
+    </style>
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+
+        <apex:panelGrid columns="2" id="theGrid" styleClass="topAligner">
+
+
+            <apex:outputText value="{!TV_Serie__c.Logo__c}" escape="false" styleClass="customImage"/>
+            <apex:outputLabel style="white-space: pre;font-size:20px;" escape="false"
+                              value="<h1>{!TV_Serie__c.Title__c}</h1>
+                                </br><h5>({!TV_Serie__c.Year__c})</h5>
+                                </br><h6>Country: <i>{!TV_Serie__c.Country__c}</i>
+                                </br>Category: <i>{!TV_Serie__c.Category__c}</i>
+                                </br></h6>"/> <!--here gonna be links to categories/countries
+                                                                                                + additionally director/cast -->
+
+        </apex:panelGrid>
+
+        <apex:pageBlock title="Description:">
+            <apex:outputText value="{!TV_Serie__c.Description__c}" style="width=75%"/>
+        </apex:pageBlock>
+
+        <apex:tabPanel switchType="client" selectedTab="name2" id="theTabPanel">
+            <apex:tab label="Episodes" name="tab1" id="tabOne">
+
+                <apex:pageBlock title="Episodes">
+                    <apex:outputText value="Season: " style="float:left"/>
+                    <apex:selectList size="1" style="float:left" value="{!Selected1}" id="picklist"
+                                     onchange="searchEpisodes()" multiselect="false">
+
+                        <apex:selectOptions value="{!season}"/>
+                        <apex:commandButton value="Search" action="{!searchEpisodes}" reRender="out"/>
+
+
+                    </apex:selectList>
+
+                    <apex:pageBlockSection >
+                        <apex:pageBlockTable value="{!episodes}" var="e" id="out">
+                            <apex:column >
+                                <apex:facet name="header">Episode</apex:facet>
+                                <apex:outputLink value="/{!e.Id}">
+                                        {!e.Episode_Number__c}
+                                </apex:outputLink>
+
+                            </apex:column>
+                            <apex:column >
+                                    {!IF(e.Title__c==null, e.Episode_Number__c, e.Title__c)}
+                            </apex:column>
+
+
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+
+
+                </apex:pageBlock>
+
+            </apex:tab>
+
+            <!-- TAB TWO CAST -->
+            <apex:tab label="Cast" name="tab2" id="tabTwo">
+                <apex:pageBlock >
+
+
+                    <apex:pageBlockSection >
+                        <apex:pageBlockTable value="{!actors}" var="a" id="out">
+                            <apex:column >
+                                <apex:facet name="header">Actors</apex:facet>
+                                <apex:outputText value="{!a.Cast__r.Photo__c}" escape="false" styleClass="customPhoto"/>
+                            </apex:column>
+                            <apex:column >
+                                <apex:outputLink value="/{!a.Cast__r.id}">
+                                {!a.Cast__r.Full_Name__c}
+                                </apex:outputLink>
+
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">As</apex:facet>
+                                {!a.Character__c}
+                            </apex:column>
+
+
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+
+
+            </apex:tab>
+        </apex:tabPanel>
+        <apex:pageBlock title="Trailer:">
+            <iframe align="center" width="500" height="300" src="{!TV_Serie__c.TrailerDisplay__c}"/>
+
+        </apex:pageBlock>
+        <apex:pageBlock title="Screenshots">
+            <apex:pageBlockSection >
+                <apex:pageBlockTable value="{!screens}" var="s">
+                    <apex:column width="100pt">
+
+                        <apex:outputText value="{!s.ScreenshotDisplay__c}" escape="false" styleClass="customScreen"/>
+                    </apex:column>
+                    <apex:column width="10pt" rendered="{!if($Profile.Name=='System Administrator',true, false)}"
+                                 headerValue="Action">
+                        <apex:outputLink onclick="return confirm('You are going to delete this object. Do you want to proceed?');"
+                                value="{!URLFOR($Action.Gallery__c.Delete, s.Id, [retURL=URLFOR($Action.TV_Serie__c.View, TV_Serie__c.Id)], true)}">
+                            Delete photo
+                        </apex:outputLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+            {!addedSeason.Season_No__c}
+        <!--EDIT SECTION -->
+        <apex:commandButton rendered="{!if($Profile.Name=='System Administrator',true, false)}" value="Edit Section"
+                            action="{!EdittheSection}" immediate="true"/>
+
+        <apex:pageBlock title="Edit Section:" rendered="{!editSection}">
+            <apex:outputText value="Title: " style="float:left"/>
+            <apex:inputText value="{!TV_Serie__c.Title__c}" style="width=75%"/>
+            <br/>
+            <apex:outputText value="Description: " style="float:left"/>
+            <apex:inputText value="{!TV_Serie__c.Description__c}" style="width=75%; width:250px"/>
+            <br/>
+            <apex:outputText value="Release Date: " style="float:left"/>
+            <apex:inputField value="{!TV_Serie__c.Release_Date__c}" style="width=75%"/>
+            <br/>
+            <apex:outputText value="Category: " style="float:left"/>
+            <apex:selectList size="1" value="{!TV_Serie__c.Category__c}" id="picklist" multiselect="false">
+                <apex:selectOptions value="{!category}"/>
+            </apex:selectList>
+            <br/>
+            <apex:outputText value="Country: " style="float:left"/>
+            <apex:selectList size="1" value="{!TV_Serie__c.Country__c}" id="picklist2" multiselect="false">
+                <apex:selectOptions value="{!Country}"/>
+            </apex:selectList>
+            <br/>
+            <apex:outputText value="Trailer (URL): " style="float:left"/>
+            <apex:inputText value="{!TV_Serie__c.Trailer__c}"/>
+
+            <apex:commandButton value="save" action="{!saveChanges}"/>
+            <br/>
+
+            <apex:inputFile value="{!photo}"></apex:inputFile>
+            <apex:commandButton value="Upload Logo" action="{!UploadPhoto}" immediate="true"/>
+            <br/>
+            <apex:inputFile value="{!screenshot}"></apex:inputFile>
+            <apex:commandButton value="Upload screenshot" action="{!UploadScreens}" immediate="true"/>
+
+
+        </apex:pageBlock>
+
+        <!--CREATE SEASON SECTION -->
+
+        <apex:commandButton rendered="{!if($Profile.Name=='System Administrator',true, false)}"
+                            value="Manage Serie Section" action="{!createSeasonSection}"/>
+        <apex:pageBlock title="Create Season&Episode Section: " rendered="{!seasonSection}">
+            <apex:commandButton value="Create New Season" action="{!newSeasonSection}" immediate="true"/>
+            <apex:commandButton value="Delete All Seasons"
+                                onclick="return confirm('You are going to delete all seasons. Do you want to proceed?');"
+                                action="{!deleteAllSeasons}" immediate="true"/>
+            <apex:commandButton value="Delete Serie"
+                                onclick="return confirm('You are going to delete this serie. Do you want to proceed?');"
+                                action="{!deleteSerie}" immediate="true"/>
+            <apex:pageBlock rendered="{!newSeason}">
+                <apex:outputText value="Number of Season: "/>
+                <apex:inputText value="{!givenSeasonNumber}"/>
+                <apex:commandButton value="OK" action="{!addNewSeason}"/>
+
+
+            </apex:pageBlock>
+
+
+            <apex:pageBlockTable value="{!seasons}" var="s">
+                <apex:column >
+                    <apex:facet name="header">Seasons</apex:facet>
+
+                    <apex:outputText value="{!s.Season_No__c}" escape="false"/>
+
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Edit</apex:facet>
+
+                    <apex:commandButton value="Manage Episodes" action="/{!s.id}"/>
+
+
+                </apex:column>
+
+            </apex:pageBlockTable>
+
+        </apex:pageBlock>
+
+
+    </apex:form>
+</apex:page>
+                                        

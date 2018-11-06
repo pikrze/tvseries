@@ -1,0 +1,144 @@
+<apex:page sidebar="false" controller="Ctrl_SeriesSearch">
+    <style>
+        .customImage img{
+    height: 100px;
+    width: 90px;
+}
+
+    </style>
+    <apex:form >
+
+        <apex:tabPanel switchType="client" selectedTab="name2" id="theTabPanel">
+            <apex:tab label="Series" name="tab1" id="tabOne">
+                <apex:pageBlock title="Series Browser">
+                    <apex:commandButton value="New Serie" action="{!seriePageNew}"/>
+
+
+                    <apex:pageBlockSection id="contact-table" columns="1" html-align="left">
+
+                        <apex:outputLabel value="Title:" style="text-align:left"/>
+
+                        <apex:inputText value="{!title}" style="float:left"
+                                        html-placeholder="What are you looking for?">
+                            <apex:commandButton value="Search" action="{!searchSeries}" reRender="contact-table"/>
+                            <apex:commandButton value="Show All" action="{!noSearch}" reRender="contact-table"/>
+
+                        </apex:inputText>
+
+
+                        <i>Filters</i>
+                        <apex:panelGrid columns="3" id="theGrid">
+                            <apex:selectList size="1" value="{!Selected1}" id="picklist" onchange="searchSeries()"
+                                             multiselect="false">
+                                Category:
+                                <apex:selectOptions value="{!category}"/>
+                            </apex:selectList>
+
+                            <apex:selectList size="1" value="{!Selected2}" id="picklist2" onchange="searchSeries()"
+                                             multiselect="false">
+                                Country:
+                                <apex:selectOptions value="{!Country}"/>
+                            </apex:selectList>
+                            <apex:selectList size="1" value="{!Selected3}" id="picklist3" multiselect="false">
+                                Release Year
+                                <apex:selectOptions value="{!ReleaseDate}"/>
+                            </apex:selectList>
+
+                        </apex:panelGrid>
+
+
+                        <apex:pageBlockTable value="{!series}" var="s">
+                            <apex:column >
+                                <apex:facet name="header">Logo</apex:facet>
+
+                                <apex:outputText value="{!IF(s.Logo__c==null,'LOGO', s.Logo__c)}" escape="false"
+                                                 styleClass="customImage"/>
+
+
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">Title</apex:facet>
+                                <apex:outputLink value="/{!s.Id}">{!s.Title__c}</apex:outputLink>
+                            </apex:column>
+
+                            <apex:column >
+                                <apex:facet name="header">Category</apex:facet>
+                                    {!s.Category__c}
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">Production</apex:facet>
+                                    {!s.Country__c}
+                            </apex:column>
+
+                            <apex:column >
+                                <apex:facet name="header">Release Date</apex:facet>
+                                <apex:outputText value="{0, date, MMMM ','  yyyy}">
+                                    <apex:param value="{!s.Release_Date__c}"/>
+                                </apex:outputText>
+                            </apex:column>
+
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:tab>
+            <apex:tab label="Cast" name="tab2" id="tabTwo">
+
+                <apex:pageBlock title="Cast Browser">
+                <apex:commandButton value="New Actor" action="{!actorPageNew}"/>
+
+                    <apex:pageBlockSection id="contact-table" columns="1" html-align="left">
+
+                        <apex:outputLabel value="Name/Surname:" style="text-align:left"/>
+
+                        <apex:inputText value="{!nameOrSurname}" style="float:left"
+                                        html-placeholder="Who are you looking for?">
+                            <apex:commandButton value="Search" action="{!searchCast}" reRender="contact-table"/>
+                            <apex:commandButton value="Show All" action="{!noSearchCast}" reRender="contact-table"/>
+
+                        </apex:inputText>
+
+
+                        <i>Filters</i>
+                        <apex:panelGrid columns="3" id="theGrid">
+                            <apex:selectList size="1" value="{!Selected4}" id="picklist" onchange="searchSeries()"
+                                             multiselect="false">
+                                Role:
+                                <apex:selectOptions value="{!Role}"/>
+                            </apex:selectList>
+
+                            <apex:selectList size="1" value="{!Selected5}" id="picklist2" onchange="searchSeries()"
+                                             multiselect="false">
+                                Nationality:
+                                <apex:selectOptions value="{!Nationality}"/>
+                            </apex:selectList>
+
+
+                        </apex:panelGrid>
+
+
+                        <apex:pageBlockTable value="{!tv_cast}" var="s">
+                            <apex:column >
+                                <apex:facet name="header">Photo</apex:facet>
+
+                                <apex:outputText value="{!IF(s.Photo__c==null,'LOGO', s.Photo__c)}" escape="false"
+                                                 styleClass="customImage"/>
+
+
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">Name/Surname</apex:facet>
+                                <apex:outputLink value="/{!s.Id}">{!s.Full_Name__c}</apex:outputLink>
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">Role</apex:facet>
+                                {!s.Role__c}
+                            </apex:column>
+
+
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,37 @@
+<apex:page sidebar="false" standardController="Episode__c" extensions="Ctrl_EpisodePage">
+    <apex:form >
+        <apex:pageMessages />
+            <apex:commandButton value="Back to Serie" action="{!backtoSerie}" immediate="true"/>
+            <apex:panelGrid columns="2" id="theGrid" styleClass="topAligner">
+
+                <apex:outputLabel style="white-space: pre;font-size:20px;" escape="false"
+                                  value="<h1>{!Episode__c.TV_Serie__r.Title__c}</h1>"/><br/>
+                <apex:outputText value="{!Episode__c.Episode_Number__c}"/><br/>
+                <apex:outputText value="Episode Name:
+                {!IF(Episode__c.Title__c==null, Episode__c.Episode_Number__c, Episode__c.Title__c)}"/><br/>
+                <apex:outputText value="Episode Number: {!Episode__c.Episode_No__c}"/><br/>
+                <apex:outputText value="Season Number: {!Episode__c.Season__r.Season_No__c}"/><br/>
+
+
+
+            </apex:panelGrid>
+
+            <apex:pageBlock title="Description:">
+                <apex:outputText value="{!Episode__c.Description__c}" style="width=75%"/>
+            </apex:pageBlock>
+
+        <!--EDIT SECTION-->
+
+        <apex:commandButton rendered="{!if($Profile.Name=='System Administrator',true, false)}" value="Edit Section"  action="{!EdittheSection}" immediate="true"/>
+        <apex:commandButton rendered="{!if($Profile.Name=='System Administrator',true, false)}" value="Delete Episode" onclick="return confirm('You are going to delete this episode. Do you want to proceed?');" action="{!deleteEpisode}" immediate="true"/>
+
+        <apex:pageBlock title="Edit Section:" rendered="{!editSection}">
+            <!--Number of Episode: <apex:inputText value="{!Episode__c.Episode_No__c}" style="width=75%"/><br/>-->
+            Description: <apex:inputText value="{!Episode__c.Description__c}" style="width=75%; width:250px"/><br/>
+            Episode Name <apex:inputText value="{!Episode__c.Title__c}"/>
+            <apex:commandButton value="save" action="{!saveChanges}"/>
+        </apex:pageBlock>
+
+
+    </apex:form>
+</apex:page>

@@ -1,0 +1,26 @@
+<apex:page sidebar="false" standardController="TV_Serie__c" extensions="Ctrl_TVSerieAddSEPage">
+    <h1>{!TV_Serie__c.Title__c}</h1>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:commandButton value="Add Season" action="{!showEpisodes}" immediate="true"/>
+
+            <apex:pageBlockTable value="{!seasons}" var="s">
+                <apex:column >
+                    <apex:facet name="header">Seasons</apex:facet>
+
+                    <apex:outputText value="{!s.Season_No__c}" escape="false"/>
+
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Edit</apex:facet>
+                    <apex:commandButton value="Add Episode" action="{!showEpisodes}" immediate="true"/>
+                </apex:column>
+
+            </apex:pageBlockTable>
+            <apex:pageBlock title="Create Episode:" rendered="{!addEpisode}">
+                Number of Episode: <apex:inputText value="{!TV_Serie__c.Title__c}" /><br/>
+            </apex:pageBlock>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,39 @@
+<apex:page sidebar="false" standardController="TV_Serie__c" extensions="Ctrl_TVSerieCreatePage">
+    <style>
+            .dim_a {width:400px; height:150px;}
+            .dim_b {width:200px; height:60px;}
+            </style>
+    <apex:pageMessages />
+    <apex:form >
+        <apex:panelGrid columns="2" id="theGrid" styleClass="topAligner">
+
+            <apex:outputLabel value="* Title" escape="false" />
+            <apex:inputText value="{!tv_series.Title__c}" style="float:left" html-placeholder="Title of the serie"/>
+
+            <apex:outputLabel value="* Category" escape="false" />
+            <apex:selectList size="1" value="{!tv_series.Category__c}" id="picklist"   multiselect="false">
+            <apex:selectOptions value="{!category}"/>
+            </apex:selectList>
+
+            <apex:outputLabel value="* Country" escape="false"/>
+            <apex:selectList size="1" value="{!tv_series.Country__c}" id="picklist2"  multiselect="false">
+            <apex:selectOptions value="{!Country}"/>
+            </apex:selectList>
+
+            <apex:outputLabel value="  Description" escape="false" />
+            <apex:inputText value="{!tv_series.Description__c}" style="width: 260px; height: 80px" html-placeholder="Description of the serie"/>
+            <apex:outputLabel value="* Release Date " escape="false"/>
+            <apex:inputField value="{!tv_series.Release_Date__c}"/>
+
+
+
+            <apex:commandButton value="Add" action="{!addSeries}"/><br/>
+            <!--<apex:inputText value="{!tv_series.Title__c}"/>-->
+            <!--<apex:commandButton value="Add" action="{!addSeries}" />-->
+
+
+
+        </apex:panelGrid>
+    </apex:form>
+
+</apex:page>

@@ -1,0 +1,13 @@
+<apex:page sidebar="false" standardController="Played__c" extensions="Ctrl_PlayedPage">
+<apex:form >
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:pageBlock >
+        <apex:outputLink value="/{!Played__c.Cast__c}">BACK</apex:outputLink><br/>
+        <apex:outputText value="Played Character: {!Played__c.Character__c}"/><br/>
+    <apex:commandButton onclick="return confirm('You are going to delete this object. Do you want to proceed?');"
+                        value="Delete" action="{!deleteAssignedSerie}"/><br/>
+    Change name of character: <apex:inputText value="{!characterName}"/>
+    <apex:commandButton value="Update" action="{!updateCharacter}"/>
+</apex:pageBlock>
+</apex:form>
+</apex:page>
